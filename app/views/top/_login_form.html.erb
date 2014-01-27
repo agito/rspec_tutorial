@@ -1,0 +1,13 @@
+<%= form_tag :login, id: 'new_session' do %>
+    <div>
+      <%= label_tag 'username', 'ユーザー名' %>
+      <%= text_field_tag 'username' %>
+    </div>
+    <div>
+      <%= label_tag 'password', 'パスワード' %>
+      <%= password_field_tag 'password' %>
+    </div>
+    <div>
+      <%= submit_tag 'ログイン' %>
+    </div>
+<% end %>

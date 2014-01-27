@@ -2,6 +2,7 @@ MyFristTest::Application.routes.draw do
 
   root to: 'top#index'
 
+  post 'login' => 'sessions#create', as: :login
 
   get "top/index"
   # The priority is based upon order of creation: first created -> highest priority.
