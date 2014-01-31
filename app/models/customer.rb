@@ -1,6 +1,9 @@
 require 'nkf'
+require 'bcrypt'
 
 class Customer < ActiveRecord::Base
+  attr_accessor :password
+
   validates :family_name, :given_name, :family_name_kana, :given_name_kana,
             presence: true, length: { maximum: 40 }
   validates :family_name, :given_name,
@@ -14,4 +17,19 @@ class Customer < ActiveRecord::Base
     self.family_name_kana = NKF.nkf('-wh2', family_name_kana) if family_name_kana
     self.given_name_kana = NKF.nkf('-wh2', given_name_kana) if given_name_kana
   end
-end  
+
+  before_save do
+    self.password_digest = BCrypt::Password.create(password) if password.present?
+  end
+
+  class << self
+    def authenticate(username, password)
+      customer = find_by_username(username)
+      if customer.try(:password_digest) && BCrypt::Password.new(customer.password_digest) == password
+        customer
+      else
+        nil
+      end
+    end
+  end
+end

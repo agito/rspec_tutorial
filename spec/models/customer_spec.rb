@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Customer do
+describe Customer, 'バリデーション' do
   let(:customer) { FactoryGirl.build(:customer) }
 
   specify '妥当なオブジェクト' do
@@ -62,4 +62,47 @@ describe Customer do
       expect(customer[column_name]).to eq('アイウ')
     end
   end
-end  
+end
+
+
+describe Customer, 'password=' do
+  let(:customer) { build(:customer, username: 'taro') }
+
+  specify '生成されたpassword_digestは60文字' do
+    customer.password = 'any_string'
+    customer.save!
+    expect(customer.password_digest).not_to be_nil
+    expect(customer.password_digest.size).to eq(60)
+  end
+
+  specify '空文字を与えるとpassword_digestはnil' do
+    customer.password = ''
+    customer.save!
+    expect(customer.password_digest).to be_nil
+  end
+end
+
+describe Customer, '.authenticate' do
+  let(:customer) { FactoryGirl.create(:customer, username: 'taro', password: 'correct_password') }
+
+  specify 'ユーザー名とパスワードに該当するCustomerオブジェクトを返す' do
+    result = Customer.authenticate(customer.username, 'correct_password')
+    expect(result).to eq(customer)
+  end
+
+  specify 'パスワードが一致しない場合はnilを返す' do
+    result = Customer.authenticate(customer.username, 'wrong_password')
+    expect(result).to be_nil
+  end
+
+  specify '該当するユーザー名が存在しない場合はnilを返す' do
+    result = Customer.authenticate('hanako', 'any_password')
+    expect(result).to be_nil
+  end
+
+  specify 'パスワード未設定のユーザーを拒絶する' do
+    customer.update_column(:password_digest, nil)
+    result = Customer.authenticate(customer.username, '')
+    expect(result).to be_nil
+  end
+end

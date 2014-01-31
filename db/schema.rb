@@ -14,6 +14,8 @@
 ActiveRecord::Schema.define(version: 20140127143150) do
 
   create_table "customers", force: true do |t|
+    t.string   "username",         null: false
+    t.string   "password_digest"
     t.string   "family_name",      null: false
     t.string   "given_name",       null: false
     t.string   "family_name_kana", null: false

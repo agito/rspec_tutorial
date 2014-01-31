@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   def create
-    if false
-      # 未実装
+    if customer = Customer.authenticate(params[:username], params[:password])
+      session[:customer_id] = customer.id
     else
       flash.alert = 'ユーザー名またはパスワードが正しくありません。'
     end

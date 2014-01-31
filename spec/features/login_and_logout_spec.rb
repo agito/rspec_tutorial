@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'ログイン' do
+  before { create(:customer, username: 'taro', password: 'correct_password') }
+
   specify 'ユーザー認証成功' do
     visit root_path
     within('form#new_session') do
@@ -21,4 +23,4 @@ describe 'ログイン' do
     expect(page).to have_css('p.alert', text: 'ユーザー名またはパスワードが正しくありません。')
     expect(page).to have_css('form#new_session')
   end
-end
+end  
