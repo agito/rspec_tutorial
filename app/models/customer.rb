@@ -2,6 +2,8 @@ require 'nkf'
 require 'bcrypt'
 
 class Customer < ActiveRecord::Base
+  has_many :rewards
+
   attr_accessor :password
 
   validates :family_name, :given_name, :family_name_kana, :given_name_kana,
@@ -22,14 +24,7 @@ class Customer < ActiveRecord::Base
     self.password_digest = BCrypt::Password.create(password) if password.present?
   end
 
-  class << self
-    def authenticate(username, password)
-      customer = find_by_username(username)
-      if customer.try(:password_digest) && BCrypt::Password.new(customer.password_digest) == password
-        customer
-      else
-        nil
-      end
-    end
+  def points
+    rewards.sum(:points)
   end
 end

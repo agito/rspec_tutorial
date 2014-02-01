@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140127143150) do
+ActiveRecord::Schema.define(version: 20140201152057) do
 
   create_table "customers", force: true do |t|
     t.string   "username",         null: false
@@ -20,6 +20,13 @@ ActiveRecord::Schema.define(version: 20140127143150) do
     t.string   "given_name",       null: false
     t.string   "family_name_kana", null: false
     t.string   "given_name_kana",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "rewards", force: true do |t|
+    t.integer  "customer_id"
+    t.integer  "points"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

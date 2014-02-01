@@ -82,27 +82,16 @@ describe Customer, 'password=' do
   end
 end
 
-describe Customer, '.authenticate' do
-  let(:customer) { FactoryGirl.create(:customer, username: 'taro', password: 'correct_password') }
 
-  specify 'ユーザー名とパスワードに該当するCustomerオブジェクトを返す' do
-    result = Customer.authenticate(customer.username, 'correct_password')
-    expect(result).to eq(customer)
-  end
 
-  specify 'パスワードが一致しない場合はnilを返す' do
-    result = Customer.authenticate(customer.username, 'wrong_password')
-    expect(result).to be_nil
-  end
+describe Customer, '#points' do
+  let(:customer) { create(:customer, username: 'taro') }
 
-  specify '該当するユーザー名が存在しない場合はnilを返す' do
-    result = Customer.authenticate('hanako', 'any_password')
-    expect(result).to be_nil
-  end
+  specify '関連付けられたRewardのpointsを合計して返す' do
+    customer.rewards.create(points: 1)
+    customer.rewards.create(points: 5)
+    customer.rewards.create(points: -2)
 
-  specify 'パスワード未設定のユーザーを拒絶する' do
-    customer.update_column(:password_digest, nil)
-    result = Customer.authenticate(customer.username, '')
-    expect(result).to be_nil
+    expect(customer.points).to eq(4)
   end
 end
